@@ -1,10 +1,4 @@
-#include "minilibx/mlx.h"
-#include "libft/libft.h"
-#include <stdio.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include "get_next_line/get_next_line.h"
+#include "header.h"
 
 int		is_corect_name(char *s)
 {
@@ -28,14 +22,42 @@ int		is_corect_name(char *s)
 	return (-1);
 }
 
+int 	lenfirst(char *s)
+{
+	char 	**t;
+	int 	i;
+
+	if (ft_strlen(s) == 0)
+		return (-1);
+	t = ft_strsplit(s, ' ');
+	i = 0;
+	while (t[i] != NULL)
+	{
+		free(t[i]);
+		i++;
+	}
+	free(t);
+	return (i);
+}
+
 int is_corect_table(int fd)
 {
-	char *line;
+	char	*line;
+	int 	len_first;
 
+	len_first = -1;
+	if (get_next_line(fd, &line) > 0)
+		len_first = lenfirst(line);
+	free(line);
+	if (len_first == -1)
+		return (-1);
 	while ((get_next_line(fd, &line)) > 0)
 	{
-		printf("%s\n", line);
+		if (lenfirst(line) != len_first)
+			return (-1);
+		free(line);
 	}
+	free(line);
 	return (0);
 }
 
@@ -57,7 +79,7 @@ int	main(int ac, char **ar)
 	if (ac == 2)
 	{
 		if (is_corect_file(ar[1]) == 0)
-			printf("OK!\n");
+			fdf(ar[1]);
 		else
 			printf("Error\n");
 	}
@@ -69,5 +91,6 @@ int	main(int ac, char **ar)
 	{
 		printf("Error\n");
 	}
+	//while (1);
 	return (0);
 }
